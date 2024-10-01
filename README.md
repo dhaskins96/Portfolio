@@ -1,12 +1,11 @@
 <h1>Hi, I'm Deion! 
 
-<h2>👨‍💻 Cybersecurity Projects:</h2>
+<h2>👨‍💻 Cybersecurity Projects and Labs:</h2>
 
-  - [Conduct An Internal Security Audit](https://github.com/joshmadakor1/Algorithms-Practice)
+  - [Use Linux Commands To Manage File Permissions](https://github.com/dhaskins96/LinuxPermissions/tree/main)
   - [Update A File Through a Python Algorithm]
   - [Create An Incident Report]
   - [Conducted a Vulnerability Assessment For a Small Business]
-  -[Use Linux Commands To manage File Permissions]
 
 <h2> Certifications: </h2>
 
