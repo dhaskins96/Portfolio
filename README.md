@@ -3,7 +3,7 @@
 <h2>👨‍💻 Cybersecurity Projects and Labs:</h2>
 
   - [Use Linux Commands To Manage File Permissions](https://github.com/dhaskins96/LinuxPermissions/tree/main)
-  - [SQL Query Filtering](https://github.com/dhaskins96/Apply-Filters-To-SQL-Queries)
+  - [Conducting A Security Audit]
   - [Create An Incident Report]
   - [Conducted a Vulnerability Assessment For a Small Business]
 
