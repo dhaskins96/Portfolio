@@ -4,8 +4,7 @@
 
   - [Use Linux Commands To Manage File Permissions](https://github.com/dhaskins96/LinuxPermissions/tree/main)
   - [Conducting A Security Audit](https://github.com/dhaskins96/Conduct-A-Security-Audit)
-  - [Create An Incident Report]
-  - [Use the NIST Cybersecurity Framework to Respond to a Security Incident]
+  - [Use the NIST Cybersecurity Framework to Respond to a Security Incident](https://github.com/dhaskins96/Respond-to-a-security-incident/blob/main/README.md)
 
 <h2> Certifications: </h2>
 
