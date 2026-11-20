@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2K26 Character Selector</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #151923;
+    --line: #262c3a;
+    --text: #f3f4f6;
+    --muted: #8b93a7;
+    --accent: #ff6b1a;
+    --glow: #ff6b1a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #23160c 0%, transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 24px 16px; gap: 28px; overflow-x: hidden;
+  }
+  header { text-align: center; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  h1 {
+    margin: 6px 0 0; font-size: clamp(26px, 6vw, 44px);
+    font-weight: 900; letter-spacing: -.02em; font-style: italic; text-transform: uppercase;
+  }
+
+  /* Reel */
+  .reel {
+    position: relative; width: min(560px, 100%); height: 150px;
+    background: var(--panel); border: 2px solid var(--line); border-radius: 18px;
+    overflow: hidden; display: grid; place-items: center;
+    transition: border-color .3s, box-shadow .3s;
+  }
+  .reel::before, .reel::after {
+    content: ""; position: absolute; left: 0; right: 0; height: 40px; z-index: 2; pointer-events: none;
+  }
+  .reel::before { top: 0; background: linear-gradient(var(--panel), transparent); }
+  .reel::after { bottom: 0; background: linear-gradient(transparent, var(--panel)); }
+  .reel.done {
+    border-color: var(--glow);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--glow) 25%, transparent),
+                0 0 60px color-mix(in srgb, var(--glow) 45%, transparent);
+  }
+  .name {
+    font-size: clamp(44px, 13vw, 84px); font-weight: 900; font-style: italic;
+    text-transform: uppercase; letter-spacing: -.01em; line-height: 1;
+    color: var(--name-color, var(--muted));
+  }
+  .name.tick { animation: tick .12s ease-out; }
+  @keyframes tick {
+    from { transform: translateY(-45%); opacity: .2; filter: blur(3px); }
+    to   { transform: translateY(0);    opacity: 1;  filter: blur(0); }
+  }
+  .name.reveal { animation: reveal .6s cubic-bezier(.2, 1.6, .4, 1); text-shadow: 0 0 30px var(--name-color); }
+  @keyframes reveal {
+    0% { transform: scale(.6); }
+    100% { transform: scale(1); }
+  }
+  .placeholder { color: var(--muted); font-size: 20px; font-style: normal; text-transform: none; font-weight: 600; letter-spacing: 0; }
+
+  .result {
+    min-height: 28px; font-size: 18px; color: var(--muted); text-align: center;
+  }
+  .result strong { color: var(--name-color, var(--text)); }
+
+  /* Big button */
+  .spin {
+    width: 200px; height: 200px; border-radius: 50%; border: none; cursor: pointer;
+    font: 900 30px/1 system-ui, sans-serif; letter-spacing: .06em; font-style: italic;
+    color: #fff; text-transform: uppercase;
+    background:
+      repeating-conic-gradient(from 0deg, transparent 0 88deg, #00000055 88deg 92deg),
+      radial-gradient(circle at 35% 30%, #ff9a52, var(--accent) 45%, #b8430a 100%);
+    box-shadow: 0 14px 0 #7a2c05, 0 24px 50px #ff6b1a55, inset 0 -8px 20px #00000040;
+    transition: transform .1s, box-shadow .1s, filter .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .spin:hover { filter: brightness(1.08); }
+  .spin:active { transform: translateY(10px); box-shadow: 0 4px 0 #7a2c05, 0 10px 30px #ff6b1a55, inset 0 -8px 20px #00000040; }
+  .spin:focus-visible { outline: 4px solid #fff; outline-offset: 6px; }
+  .spin:disabled { cursor: default; animation: roll 1s linear infinite; filter: saturate(.85); }
+  @keyframes roll { to { rotate: 360deg; } }
+
+  /* Roster chips */
+  .roster { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .chip {
+    padding: 8px 14px; border-radius: 999px; border: 2px solid var(--line);
+    font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--muted); background: var(--panel); transition: all .12s;
+  }
+  .chip.on { color: #0b0d12; background: var(--c); border-color: var(--c); transform: translateY(-2px); }
+  .chip .count { opacity: .7; margin-left: 6px; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .name.tick, .name.reveal, .spin:disabled { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">NBA 2K26</div>
+    <h1>Character Selector</h1>
+  </header>
+
+  <div class="reel" id="reel" aria-live="polite">
+    <div class="name placeholder" id="name">Press the button to pick</div>
+  </div>
+
+  <button class="spin" id="spin" aria-label="Pick a random character">Spin</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="roster" id="roster" aria-label="Characters"></div>
+
+<script>
+  const CHARACTERS = [
+    { name: "GPT",    color: "#10d39e" },
+    { name: "Grok",   color: "#e5e7eb" },
+    { name: "Gemini", color: "#6aa8ff" },
+    { name: "Claude", color: "#ff8a4c" },
+  ];
+
+  const nameEl = document.getElementById("name");
+  const reel = document.getElementById("reel");
+  const btn = document.getElementById("spin");
+  const result = document.getElementById("result");
+  const roster = document.getElementById("roster");
+  const counts = CHARACTERS.map(() => 0);
+
+  // Cryptographically secure, unbiased random int in [0, n)
+  function rng(n) {
+    const max = Math.floor(0x100000000 / n) * n;
+    const buf = new Uint32Array(1);
+    do { crypto.getRandomValues(buf); } while (buf[0] >= max);
+    return buf[0] % n;
+  }
+
+  const chips = CHARACTERS.map((c, i) => {
+    const el = document.createElement("div");
+    el.className = "chip";
+    el.style.setProperty("--c", c.color);
+    el.innerHTML = `${c.name}<span class="count" data-i="${i}">0</span>`;
+    roster.appendChild(el);
+    return el;
+  });
+
+  function show(i, cls) {
+    const c = CHARACTERS[i];
+    nameEl.className = "name";
+    void nameEl.offsetWidth; // restart animation
+    nameEl.textContent = c.name;
+    nameEl.style.setProperty("--name-color", c.color);
+    nameEl.classList.add(cls);
+    chips.forEach((ch, j) => ch.classList.toggle("on", j === i));
+  }
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  async function spin() {
+    btn.disabled = true;
+    reel.classList.remove("done");
+    result.textContent = "Rolling…";
+    result.style.removeProperty("--name-color");
+
+    const winner = rng(CHARACTERS.length);
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Total ticks: a few full laps plus a random offset, landing exactly on the winner
+    let idx = rng(CHARACTERS.length);
+    const laps = reduced ? 1 : 6 + rng(3);
+    const steps = laps * CHARACTERS.length + ((winner - idx + CHARACTERS.length) % CHARACTERS.length);
+
+    for (let s = 0; s < steps; s++) {
+      idx = (idx + 1) % CHARACTERS.length;
+      show(idx, "tick");
+      // Ease-out: fast at the start, slowing down near the end
+      const t = s / steps;
+      await sleep(40 + Math.pow(t, 3) * 420);
+    }
+
+    const c = CHARACTERS[winner];
+    show(winner, "reveal");
+    document.documentElement.style.setProperty("--glow", c.color);
+    reel.classList.add("done");
+    counts[winner]++;
+    roster.querySelector(`.count[data-i="${winner}"]`).textContent = counts[winner];
+    result.style.setProperty("--name-color", c.color);
+    result.innerHTML = `You're playing as <strong>${c.name}</strong>`;
+    btn.textContent = "Again";
+    btn.disabled = false;
+    btn.focus();
+  }
+
+  btn.addEventListener("click", spin);
+</script>
+</body>
+</html>
